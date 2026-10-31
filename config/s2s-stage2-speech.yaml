@@ -1,0 +1,86 @@
+# Stage 2: Speech-token generation and termination supervision.
+# Run: torchrun --standalone --nnodes=1 --nproc_per_node=${NUM_GPUS} main.py --config-name s2s-stage2-speech
+# Set data_root and ckpt_root, or override paths.* with Hydra.
+# Replace dataset paths with your own Parquet files or shard directories.
+
+paths:
+  data_root: ${oc.env:data_root,/path/to/data}
+  ckpt_root: ${oc.env:ckpt_root,/path/to/checkpoints}
+  base_model: ${oc.env:base_model,${paths.ckpt_root}/Qwen3-ASR-1.7B}
+  token2wav_root: ${oc.env:token2wav_root,${paths.ckpt_root}/Fun-CosyVoice3-0.5B}
+  metricx_root: ${oc.env:metricx_root,${paths.ckpt_root}/metricx-24-hybrid-xxl-v2p6-bfloat16}
+
+common:
+  _name: transdubber-stage2
+  seed: 42
+  num_nodes: 1
+  output_dir: ${paths.ckpt_root}/sft/${common._name}
+
+checkpoint:
+  resume_ckpt_path: ${paths.ckpt_root}/sft/transdubber-stage1/checkpoints/last.ckpt
+  val_check_interval: 0.25
+  check_val_every_n_epoch: 1
+
+dataset:
+  seed: ${common.seed}
+  num_workers: 8
+  batch_size: 8
+  sampling_rate: 16000
+  speech_codec_rate_hz: 25.0
+
+  train_parquet_dir:
+    - ${paths.data_root}/stage2/train
+  dev_parquet_dir:
+    - ${paths.data_root}/stage2/dev
+  pause_audio_style: clean
+
+  paired_pause_train_parquet_dir: []
+  ast_text_train_parquet_dir: []
+  asr_only_train_parquet_dir: []
+  enable_base_pause_speech_supervision: false
+  pause_speech_boundary_trim_s: 0.08
+
+  pin_memory: true
+  prefetch_factor: 2
+  pause_token: "<pause>"
+  add_pause_to_target_text: false
+
+model:
+  model_path: ${paths.base_model}
+  train_param_dtype: auto
+  special_tokens:
+    - "<s2st_text>"
+    - "<s2st_eos>"
+    - "<|speech_codec|>"
+    - "<pause>"
+  speech_codec_offset: 151936
+  speech_codec_size: 6561
+  text_loss_weight: 1.0
+  sequence_normalized_loss: true
+  pause_token_loss_weight: 1.0
+  pause_speech_token_loss_weight: 1.0
+  eos_token_loss_weight: 4.0
+
+optimization:
+  lr: 1e-4
+  speech_lr_mult: 10
+  max_epoch: 7
+  max_steps: -1
+  warmup_ratio: 0.05
+  accumulate_grad_batches: 4
+  log_steps: 50
+
+  optimizer:
+    adam_betas_0: 0.9
+    adam_betas_1: 0.999
+    adam_eps: 1e-06
+    weight_decay: 0.02
+
+  lr_scheduler:
+    peak_lr: 1.0
+    decay_horizon_epochs: ${optimization.max_epoch}
+    warmup_steps: -1
+
+hydra:
+  run:
+    dir: ${common.output_dir}

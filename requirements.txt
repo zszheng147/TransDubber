@@ -1,0 +1,37 @@
+# Python 3.11 with PyTorch 2.8.0 and CUDA 12.8 wheels.
+# Install torch first, then the remaining dependencies:
+#   pip install torch==2.8.0 torchaudio==2.8.0 --index-url https://download.pytorch.org/whl/cu128
+#   pip install -r requirements.txt
+#   pip install flash-attn==2.8.3.post1 --no-build-isolation   # optional, see README
+--extra-index-url https://download.pytorch.org/whl/cu128
+torch==2.8.0
+torchaudio==2.8.0
+
+# --- training / inference core
+transformers==4.57.6
+lightning==2.6.1
+hydra-core==1.3.2
+omegaconf==2.3.0
+accelerate==1.12.0
+numpy==2.4.2
+pyarrow==23.0.1
+librosa==0.11.0
+soundfile==0.13.1
+audioread==3.1.0
+scipy==1.17.1
+einops==0.8.2
+x-transformers==2.16.1      # token2wav DiT
+onnxruntime==1.24.2         # token2wav front-end (CAM++ speaker embedding, speech tokenizer)
+openai-whisper==20250625    # token2wav front-end log-mel features
+sentencepiece==0.2.1        # google/mt5-xl tokenizer for MetricX
+protobuf==6.33.5
+tqdm==4.67.3
+wandb==0.25.0
+
+# --- rewards / evaluation
+silero-vad==6.2.1           # pause / silence metrics and the RL pause reward
+sacrebleu==2.6.0            # eval/bleu.py
+
+# --- not on PyPI / optional, install separately when needed
+# MetricX-24 (RL reward + eval/metricx.py): git clone https://github.com/google-research/metricx -> $metricx_root/metricx
+# COMET (eval/comet_score.py):              pip install unbabel-comet
