@@ -173,7 +173,7 @@ If you use this work in your research, please cite:
 @article{transdubber2026,
   title   = {Learning Timeline-Preserving Speech-to-Speech Translation},
   author  = {Zheng, Zhisheng and Harwath, David},
-  journal = {arXiv preprint arXiv:XXXX.XXXXX},
+  journal = {arXiv preprint arXiv:2611.00690},
   year    = {2026}
 }
 ```
