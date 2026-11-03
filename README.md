@@ -1,6 +1,6 @@
 # TransDubber: Learning Timeline-Preserving Speech-to-Speech Translation
 
-[![arXiv](https://img.shields.io/badge/arXiv-Paper-b31b1b.svg)]() [![Demo page](https://img.shields.io/badge/Demo-Page-orange.svg)](https://zhishengzheng.com/transdubber/) [![Checkpoints](https://img.shields.io/badge/Checkpoints-Download-blue.svg)](https://huggingface.co/zhisheng01/TransDubber) [![Python](https://img.shields.io/badge/Python-3.11-brightgreen)](#environment) [![License](https://img.shields.io/badge/License-Apache--2.0-lightgrey.svg)](LICENSE)
+[![arXiv](https://img.shields.io/badge/arXiv-Paper-b31b1b.svg)](https://arxiv.org/abs/2611.00690) [![Demo page](https://img.shields.io/badge/Demo-Page-orange.svg)](https://zhishengzheng.com/transdubber/) [![Checkpoints](https://img.shields.io/badge/Checkpoints-Download-blue.svg)](https://huggingface.co/zhisheng01/TransDubber) [![Python](https://img.shields.io/badge/Python-3.11-brightgreen)](#environment) [![License](https://img.shields.io/badge/License-Apache--2.0-lightgrey.svg)](LICENSE)
 
 **TL;DR:** TransDubber translates English speech into Chinese speech while preserving timing,
 pauses, and speaker voice. This repository provides training, inference, and evaluation code.
